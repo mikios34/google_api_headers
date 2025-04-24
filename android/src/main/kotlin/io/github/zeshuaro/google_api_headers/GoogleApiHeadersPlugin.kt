@@ -38,15 +38,25 @@ class GoogleApiHeadersPlugin : MethodCallHandler, FlutterPlugin {
                 val packageManager = context!!.packageManager
                 val args = call.arguments<String>()!!
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                    packageManager.getPackageInfo(
-                        args,
-                        PackageManager.GET_SIGNING_CERTIFICATES
-                    ).signingInfo?.apkContentsSigners?.forEach { signature ->
-                        parseSignature(
-                            signature,
-                            result
-                        )
+                    val packageInfo = packageManager.getPackageInfo(args,PackageManager.GET_SIGNING_CERTIFICATES)
+                    val signers = packageInfo.signingInfo?.apkContentsSigners
+                    if (signers != null) {
+                        for (signature in signers) {
+                            parseSignature(signature, result)
+                        }
+                    } else {
+                        result.error("ERROR", "No signing info available", null)
                     }
+                    
+                    // packageManager.getPackageInfo(
+                    //     args,
+                    //     PackageManager.GET_SIGNING_CERTIFICATES
+                    // ).signingInfo?.apkContentsSigners.forEach { signature ->
+                    //     parseSignature(
+                    //         signature,
+                    //         result
+                    //     )
+                    // }
                 } else {
                     @Suppress("DEPRECATION")
                     packageManager.getPackageInfo(
