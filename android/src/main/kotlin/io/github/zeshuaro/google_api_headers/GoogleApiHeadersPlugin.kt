@@ -41,7 +41,7 @@ class GoogleApiHeadersPlugin : MethodCallHandler, FlutterPlugin {
                     packageManager.getPackageInfo(
                         args,
                         PackageManager.GET_SIGNING_CERTIFICATES
-                    ).signingInfo.apkContentsSigners.forEach { signature ->
+                    ).signingInfo?.apkContentsSigners.forEach { signature ->
                         parseSignature(
                             signature,
                             result
@@ -52,7 +52,7 @@ class GoogleApiHeadersPlugin : MethodCallHandler, FlutterPlugin {
                     packageManager.getPackageInfo(
                         args,
                         PackageManager.GET_SIGNATURES
-                    ).signatures.forEach { signature -> parseSignature(signature, result) }
+                    ).signatures?.forEach { signature -> parseSignature(signature, result) }
                 }
 
             } catch (e: Exception) {
